@@ -7,12 +7,8 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "dist/student-management-tool",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "public": "dist/angular_signal_contact_app/browser",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",
