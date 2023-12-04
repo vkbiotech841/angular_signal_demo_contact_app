@@ -1,0 +1,15 @@
+<mat-list>
+  @for (contact of contacts(); track contact) {
+    <mat-list-item>
+      <h3 matListItemTitle>
+        {{ contact.name }}
+      </h3>
+      <p matListItemLine>
+        {{ contact.email }}
+      </p>
+      <button matListItemMeta mat-icon-button (click)="deleteContact(contact)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-list-item>
+  }
+</mat-list>
