@@ -2,7 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Contact } from '../models/contact.model';
 import { Router } from '@angular/router';
 import { Firestore, collectionData, collection, CollectionReference, DocumentReference, addDoc, doc, updateDoc, deleteDoc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 
 
 @Injectable({
@@ -11,53 +11,22 @@ import { Observable } from 'rxjs';
 export class ContactsService {
 
   private firestore: Firestore = inject(Firestore);
+  public router = inject(Router);
 
-  public dummyContacts: Contact[] = [
-    // {
-    //   name: 'Vikram Kumar',
-    //   email: 'xyz@gmail.com',
-    //   phone: '0123456789',
-    //   skypeId: ''
-    // },
-    // {
-    //   name: 'test 01',
-    //   email: 'test01@gmail.com',
-    //   phone: '0123456789',
-    //   skypeId: ''
-    // },
-    // {
-    //   name: 'test 02',
-    //   email: 'test02@gmail.com',
-    //   phone: '0123456789',
-    //   skypeId: ''
-    // },
-  ];
 
-  public maximumContactsLimit: number = 4;
-
-  public contacts = signal<Contact[]>([...this.dummyContacts]);
+  public contacts = signal<Contact[]>([]);
   public totalContacts = computed(() => this.contacts().length);
   public maxContactsReached = computed(() => this.totalContacts() >= this.maximumContactsLimit);
 
+  public maximumContactsLimit: number = 4;
+
   constructor() { }
 
-  public router = inject(Router);
 
-  public addContact(newContact: Contact) {
 
-    if (!newContact) return;
-
+  public addContact(newContact: Contact): Observable<any> {
     const collectionInstance: CollectionReference = collection(this.firestore, 'students');
-
-    addDoc(collectionInstance, newContact)
-      .then((documentReference: DocumentReference) => {
-        this.contacts.update((contacts) => ([newContact, ...this.contacts()]));
-        this.router.navigate(['']);
-        console.log("success");
-      })
-      .catch((error) => {
-        console.log("error", error);
-      })
+    return from(addDoc(collectionInstance, newContact));
   }
 
   public getStudentsList(): Observable<any> {
@@ -65,33 +34,14 @@ export class ContactsService {
     return collectionData(collectionInstance, { idField: 'id' });
   }
 
-  public updateContact(id: string) {
+  public updateContact(id: string, updateData: any): Observable<any> {
     const docInstance: DocumentReference = doc(this.firestore, 'students', id);
-
-    const updateData = {
-      name: 'updatedData'
-    };
-
-    updateDoc(docInstance, updateData)
-      .then(() => {
-        console.log("success");
-      }).catch((error) => {
-        console.log("error", error);
-      })
-
+    return from(updateDoc(docInstance, updateData));
   }
 
-  public deleteContactCrud(id: string) {
+  public deleteContactCrud(id: string): Observable<any> {
     const docInstance: DocumentReference = doc(this.firestore, 'students', id);
-    deleteDoc(docInstance)
-      .then(() => {
-        console.log("document deleted")
-      })
-      .catch((error) => {
-        console.log("error", error);
-      }
-      )
-
+    return from(deleteDoc(docInstance));
   }
 
 
@@ -113,14 +63,13 @@ export class ContactsService {
   //   }, 1000);
   // }
 
-  public deleteContact(contact: Contact) {
+  // public deleteContact(contact: Contact) {
 
-    console.log("contact", contact);
-    console.log("contacts", this.contacts());
+  //   console.log("contact", contact);
+  //   console.log("contacts", this.contacts());
 
-    setTimeout(() => {
-      this.contacts.update((contacts) => contacts.filter(c => c.email !== contact.email));
-
-    }, 1000);
-  }
+  //   setTimeout(() => {
+  //     this.contacts.update((contacts) => contacts.filter(c => c.email !== contact.email));
+  //   }, 1000);
+  // }
 }

@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ContactsService } from '../../services/contacts.service';
 
@@ -15,6 +15,8 @@ import { ContactsService } from '../../services/contacts.service';
   styleUrl: './add-contact.component.scss'
 })
 export class AddContactComponent {
+
+  public router = inject(Router);
 
   public name: string = '';
   public email: string = '';
@@ -31,7 +33,19 @@ export class AddContactComponent {
       skypeId: this.skypeId
     };
 
-    this.contactsService.addContact(payload);
+    this.contactsService.addContact(payload).subscribe(
+      {
+        next: (result) => {
+
+          // this.contactsService.contacts.update((contacts) => ([payload, ...this.contactsService.contacts()]));
+          this.router.navigate(['']);
+          console.log("success", result);
+        },
+        error: () => { },
+        complete: () => { }
+
+      }
+    )
   }
 
 }
