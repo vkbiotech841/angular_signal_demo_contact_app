@@ -19,6 +19,7 @@ export class AddContactComponent {
   public name: string = '';
   public email: string = '';
   public phone: string = '';
+  public skypeId: string = '';
 
   public contactsService = inject(ContactsService);
 
@@ -27,6 +28,7 @@ export class AddContactComponent {
       name: this.name,
       email: this.email,
       phone: this.phone,
+      skypeId: this.skypeId
     };
 
     this.contactsService.addContact(payload);

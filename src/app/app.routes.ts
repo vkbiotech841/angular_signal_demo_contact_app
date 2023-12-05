@@ -7,13 +7,9 @@ export const routes: Routes = [
     path: "",
     pathMatch: "full",
     component: ContactsListComponent
-
-
   },
   {
     path: "add",
     component: AddContactComponent
-
-
   },
 ];
